@@ -2,7 +2,13 @@
 
 ## 🎯 Amaç
 
-99 katılımcının rastgele fiyat tahmini yapmasını ve **gerçek FHEVM şifrelemesi** ile bids gönderimi simüle etmek.
+10 katılımcının (1 user + 9 simüle) rastgele fiyat tahmini yapmasını ve **gerçek FHEVM şifrelemesi** ile bids gönderimi simüle etmek.
+
+**Not:** Participant sayısı **100 → 10**'a optimize edilmiştir çünkü:
+- ✅ Real FHE şifreleme katılımcı başına ~1 saniye alır
+- ✅ 10 katılımcı = ~10 saniye total (demo için makul)
+- ✅ 100 katılımcı = ~100 saniye (test ve demo için çok uzun)
+- ✅ Production'da batch encryption kullanılabilir
 
 ## ✅ Implementasyon
 
@@ -20,7 +26,7 @@ const { encrypt: realEncrypt } = useEncryptBid();
 // Fallback ile mock encryption
 const encrypt = useCallback(async (value: number) => {
     try {
-        return await realEncrypt(value);  // ✅ Real FHEVM
+        return await realEncrypt(value);  // ✅ Real FHEVM (Zama Relayer)
     } catch (err) {
         console.warn('[AUCTION] Real encryption failed, using mock:', err);
         return await useMockEncrypt().encrypt(value);  // ⚠️ Fallback
@@ -31,12 +37,12 @@ const encrypt = useCallback(async (value: number) => {
 #### 3. Simulate Akışı
 ```
 simulateFullAuction() 
-  ├─ MAX_PARTICIPANTS - participants.length = 99 bid
+  ├─ MAX_PARTICIPANTS - participants.length = 9 simüle bid
   ├─ Loop through each bid:
-  │  ├─ Random fiyat (target ± 2000)
+  │  ├─ Random fiyat ($100-$15,000)
   │  ├─ MIN/MAX bound check
-  │  ├─ ✅ Real FHEVM encryption çağrı
-  │  ├─ Handles + inputProof alımı
+  │  ├─ ✅ Real FHEVM encryption çağrı (~1 saniye)
+  │  ├─ Handles + inputProof alımı (Zama Relayer SDK v0.2.0)
   │  └─ Participant'a ekleme
   └─ Auction state ENDED'a ayar
 ```

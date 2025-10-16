@@ -47,9 +47,7 @@ export default defineConfig(({ mode }) => {
     plugins: [react()],
     define: {
       'process.env.GEMINI_API_KEY': JSON.stringify(env.GEMINI_API_KEY || ''),
-      'process.env.NEXT_PUBLIC_RELAYER_PUBLIC_KEY': env.NEXT_PUBLIC_RELAYER_PUBLIC_KEY 
-        ? hexToUint8ArrayCode(env.NEXT_PUBLIC_RELAYER_PUBLIC_KEY)
-        : 'undefined',
+      'process.env.NEXT_PUBLIC_RELAYER_PUBLIC_KEY': JSON.stringify(env.NEXT_PUBLIC_RELAYER_PUBLIC_KEY || ''),
       'process.env.NEXT_PUBLIC_RELAYER_PUBLIC_KEY_HEX': JSON.stringify(env.NEXT_PUBLIC_RELAYER_PUBLIC_KEY || ''),
       'process.env.NEXT_PUBLIC_RELAYER_PUBLIC_KEY_ID': JSON.stringify(env.NEXT_PUBLIC_RELAYER_PUBLIC_KEY_ID || ''),
       'process.env.NEXT_PUBLIC_RELAYER_ENDPOINT': JSON.stringify(env.NEXT_PUBLIC_RELAYER_ENDPOINT || ''),

@@ -35,7 +35,7 @@ The FHEVM SDK is **completely framework-agnostic** - the core encryption logic h
 
 **All examples are identical functionally - they share the same:**
 - ✅ Real FHEVM encryption (Relayer SDK v0.2.0)
-- ✅ 99-bid auction simulation (proves scalability)
+- ✅ 10-participant auction simulation (1 user + 9 simulated bids - optimized for ~1 second FHE encryption per bid)
 - ✅ TypeScript support (strict mode ready)
 - ✅ Error handling & logging
 - ✅ Copy-paste ready, production code

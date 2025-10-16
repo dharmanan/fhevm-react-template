@@ -57,8 +57,8 @@
     "hardhat-deploy": "^0.11.45"
   },
   "devDependencies": {
-    "@types/node": "^22.7.5",
-    
+    "@types/minimatch": "^6.0.0",
+    "@types/node": "^22.18.10",
     "prettier": "^3.6.2",
     "ts-node": "^10.9.2",
     "typescript": "^5.9.2"

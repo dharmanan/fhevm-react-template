@@ -101,12 +101,13 @@ pnpm dev
 # Open http://localhost:3000
 ```
 
-**File:** `examples/nextjs-app/hooks/useAuction.ts` (with 99-bid simulation)
+**File:** `examples/nextjs-app/hooks/useAuction.ts` (with 10-participant simulation)
 
 **Features:**
 - Full auction UI with encrypted bids
-- Real FHEVM encryption
-- 99-bid simulation demo
+- Real FHEVM encryption (Zama Relayer SDK v0.2.0)
+- 10-participant simulation demo (1 user + 9 simulated bids)
+  - *Optimized for real FHE performance: ~1 second per encrypted bid*
 - Production-ready error handling
 
 ---
@@ -143,13 +144,13 @@ pnpm dev
 
 **Files:**
 - `src/index.ts` - Main demo
-- `src/batch-encrypt.ts` - Batch processing (99 bids)
+- `src/batch-encrypt.ts` - Batch processing (10 encrypted bids with real FHE)
 
 **Use Cases:**
 - Preprocessing bids before frontend submission
 - CI/CD pipelines
 - Data validation workflows
-- Batch encryption with checksums
+- Batch encryption with real homomorphic encryption proofs
 
 **Output:**
 ```

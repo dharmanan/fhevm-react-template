@@ -265,19 +265,34 @@ async function onSimulate() {
 
 ### Gerekli Kod:
 ```typescript
-// ✅ FULL FHEVM FLOW
-async function simulateOtherBids() {
-  for (let i = 0; i < 99; i++) {
-    // 1. Random bid değeri
-    const bidAmount = Math.floor(Math.random() * 10000) + 100;
+## 📋 Simulate Fonksiyonu - Implementasyon
+
+> **Note:** Participant sayısı 100 → 10 optimize edilmiştir. Nedeni: Real FHEVM şifreleme katılımcı başına ~1 saniye alır. 100 katılımcı = ~100 saniye (test için uzun). 10 katılımcı = ~10 saniye (makul).
+
+### Güncel Kod:
+```typescript
+// ✅ FULL FHEVM FLOW (10 katılımcı)
+async function simulateFullAuction() {
+  // 9 simüle katılımcı bids (1 kullanıcı + 9 simüle = 10 total)
+  for (let i = 0; i < 9; i++) {
+    // 1. Random bid değeri ($100-$15,000 range)
+    const bidAmount = Math.floor(Math.random() * (MAX_BID - MIN_BID + 1)) + MIN_BID;
     
-    // 2. ŞIFRELEME (real FHEVM!)
-    const encrypted = await encrypt(bidAmount);
+    // 2. ŞIFRELEME (real FHEVM - Zama Relayer SDK!)
+    const encrypted = await encrypt(bidAmount);  // ~1 saniye
     
-    // 3. Smart contract'a submit
-    await submit(encrypted);
+    // 3. Handles + inputProof alımı (gerçek FHE proof)
+    // 4. Participant'a ekleme
   }
 }
+```
+
+### Performans:
+```
+10 katılımcı × ~1 saniye FHE = ~10 saniye total
+✅ Demo için ideal  
+✅ Batch encryption ile production için ölçeklenebilir
+```
 ```
 
 ---
