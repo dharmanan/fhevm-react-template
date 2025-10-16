@@ -1,20 +1,6 @@
-// --- FHEVM-kit Simulation ---
-// window.ethereum tanımı
-interface Window {
-  ethereum?: any;
-}
-
-// Simülasyon için encrypt fonksiyonu
-const encrypt = async (value: number) => {
-  await new Promise(res => setTimeout(res, 300));
-  return `0x_encrypted_${value}_${Math.random().toString(16).slice(2)}`;
-};
-
-// --- Main Auction Hook ---
 import { useState, useEffect, useCallback } from 'react';
-import { AuctionState, UserState, type Bid, type Winner, type Product } from '../../../packages/fhevm-sdk/src/core/types';
-import { AUCTION_DURATION_SECONDS, MAX_PARTICIPANTS, MIN_BID, MAX_BID } from '../../../packages/fhevm-sdk/src/core/constants';
-import { ethers } from 'ethers';
+import { AuctionState, UserState, type Bid, type Winner, type Product } from '../types';
+import { AUCTION_DURATION_SECONDS, MAX_PARTICIPANTS, MIN_BID, MAX_BID } from '../constants';
 
 // --- FHEVM-kit Simulation ---
 const useEncrypt = () => ({
@@ -33,11 +19,7 @@ const useDecrypt = () => ({
 
 // --- Main Auction Hook ---
 
-// Ethers ve FHEVM entegrasyonu için örnek fonksiyonlar
-// import { initFhevm, createInstance, FhevmInstance } from 'fhevm-js'; // Eğer erişim sağlanırsa
-// import AuctionABI from '../abis/Auction.json'; // ABI dosyasını eklemelisin
-
-export const useAuction = (product: Product | null, contractAddress?: string) => {
+export const useAuction = (product: Product | null) => {
     const [auctionState, setAuctionState] = useState<AuctionState>(AuctionState.LIVE);
     const [userState, setUserState] = useState<UserState>(UserState.CAN_JOIN);
     const [timeLeft, setTimeLeft] = useState(AUCTION_DURATION_SECONDS);
@@ -45,32 +27,10 @@ export const useAuction = (product: Product | null, contractAddress?: string) =>
     const [winner, setWinner] = useState<Winner | null>(null);
     const [bid, setBid] = useState('');
     const [isLoading, setIsLoading] = useState(false);
-    const [provider, setProvider] = useState<ethers.BrowserProvider | null>(null);
-    const [signer, setSigner] = useState<ethers.Signer | null>(null);
-    const [contract, setContract] = useState<ethers.Contract | null>(null);
 
-    // Ethers ile sözleşme bağlantısı
-    const init = useCallback(async () => {
-        if (window.ethereum && product && contractAddress) {
-            try {
-                const browserProvider = new ethers.BrowserProvider(window.ethereum);
-                const ethSigner = await browserProvider.getSigner();
-                setProvider(browserProvider);
-                setSigner(ethSigner);
-                // ABI dosyasını eklemelisin
-                // const auctionContract = new ethers.Contract(contractAddress, AuctionABI, ethSigner);
-                // setContract(auctionContract);
-            } catch (e) {
-                console.error("Initialization failed:", e);
-                alert("Could not connect to wallet or FHEVM network.");
-            }
-        }
-    }, [product, contractAddress]);
-
-    useEffect(() => {
-        init();
-    }, [init]);
-
+    const { encrypt } = useEncrypt();
+    const { decrypt } = useDecrypt();
+    
     const resetAuction = useCallback(() => {
         setAuctionState(AuctionState.LIVE);
         setUserState(UserState.CAN_JOIN);
@@ -117,48 +77,61 @@ export const useAuction = (product: Product | null, contractAddress?: string) =>
         setIsLoading(false);
     }, [product]);
 
-    // Teklif gönderme fonksiyonu
     const submitBid = useCallback(async () => {
-        if (!contract || !product) {
-            alert("Application not initialized.");
+        if (!product) return;
+        const bidValue = parseInt(bid, 10);
+        if (isNaN(bidValue) || bidValue < MIN_BID || bidValue > MAX_BID) {
+            alert(`Please enter a valid bid between $${MIN_BID} and $${MAX_BID}.`);
             return;
         }
-        const bidValue = parseInt(bid, 10);
-        setIsLoading(true);
-        try {
-            // Şifreleme işlemi burada eklenmeli (ör. FHEVM JS SDK ile)
-            // const encryptedBid = ...
-            // Şimdilik düz bid gönderiyoruz
-            // const tx = await contract.placeBid(encryptedBid, { value: ethers.parseEther(product.entryFee.toString()) });
-            // await tx.wait();
-            setUserState(UserState.BID_SUBMITTED);
-        } catch (error) {
-            console.error("Bid submission failed:", error);
-            alert("Bid submission failed. Check console for details.");
-        } finally {
-            setIsLoading(false);
-        }
-    }, [bid, contract, product]);
 
-    // Kazananı açıklama fonksiyonu
-    const revealWinner = useCallback(async () => {
-        if (!contract) return;
         setIsLoading(true);
-        try {
-            // const tx = await contract.revealWinner();
-            // await tx.wait();
-            // const winnerAddress = await contract.winner();
-            // const winningBid = await contract.winningBid();
-            // const winningDifference = await contract.winningDifference();
-            // setWinner({ address: winnerAddress, bid: Number(winningBid), difference: Number(winningDifference) });
+        const encryptedBid = await encrypt(bidValue);
+        const newParticipant: Bid = {
+            address: `0x${Math.random().toString(16).slice(2, 12)}...${Math.random().toString(16).slice(2, 6)}`,
+            encryptedBid,
+            originalBid: bidValue,
+        };
+        
+        await new Promise(res => setTimeout(res, 1000));
+        setParticipants(prev => [...prev, newParticipant]);
+        setUserState(UserState.BID_SUBMITTED);
+        setIsLoading(false);
+        setBid('');
+    }, [bid, encrypt, product]);
+
+    const revealWinner = useCallback(async () => {
+        if (!product || auctionState !== AuctionState.ENDED) return;
+
+        setIsLoading(true);
+        if (participants.length === 0) {
+            setWinner(null);
             setAuctionState(AuctionState.REVEALED);
-        } catch (error) {
-            console.error("Failed to reveal winner:", error);
-            alert("Failed to reveal winner. Check if you are the owner and the auction has ended.");
-        } finally {
             setIsLoading(false);
+            return;
         }
-    }, [contract]);
+        
+        let closestBid: Bid = participants[0];
+        let smallestDifference = Math.abs(closestBid.originalBid - product.targetPrice);
+
+        for (let i = 1; i < participants.length; i++) {
+            const currentDifference = Math.abs(participants[i].originalBid - product.targetPrice);
+            if (currentDifference < smallestDifference) {
+                smallestDifference = currentDifference;
+                closestBid = participants[i];
+            }
+        }
+        
+        const winningBidValue = await decrypt(closestBid.encryptedBid);
+        setWinner({
+            address: closestBid.address,
+            bid: winningBidValue,
+            difference: smallestDifference
+        });
+        
+        setAuctionState(AuctionState.REVEALED);
+        setIsLoading(false);
+    }, [auctionState, participants, decrypt, product]);
 
     const simulateFullAuction = useCallback(async () => {
         if (!product) return;
@@ -211,9 +184,3 @@ export const useAuction = (product: Product | null, contractAddress?: string) =>
         resetAuction,
     };
 };
-
-declare global {
-  interface Window {
-    ethereum?: any;
-  }
-}
