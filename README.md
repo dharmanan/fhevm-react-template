@@ -65,6 +65,10 @@ cd examples/vue-example && pnpm install && pnpm dev
 cd examples/node-example && pnpm install && node src/index.ts
 ```
 
+**Demo Access:**
+- 🎬 **Live Demo (Local):** `http://localhost:3000` - Start with `cd examples/nextjs-app && pnpm dev`
+- 📹 **Video Walkthrough:** Coming soon (comprehensive SDK tour + setup guide)
+
 ---
 
 ## � What is FHEVM?
