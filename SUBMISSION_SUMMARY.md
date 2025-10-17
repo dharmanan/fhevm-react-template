@@ -2,6 +2,8 @@
 
 Complete submission package for the Zama FHEVM SDK bounty challenge.
 
+**📹 [Video Walkthrough](https://www.youtube.com/watch?v=jVdb4_ishNA)** - 5-minute comprehensive tour of the SDK design, setup, and real FHEVM encryption demo
+
 ---
 
 ## 📦 What We Built

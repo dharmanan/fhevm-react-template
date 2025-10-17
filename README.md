@@ -66,8 +66,8 @@ cd examples/node-example && pnpm install && node src/index.ts
 ```
 
 **Demo Access:**
-- 🎬 **Live Demo (Local):** `http://localhost:3000` - Start with `cd examples/nextjs-app && pnpm dev`
-- 📹 **Video Walkthrough:** Coming soon (comprehensive SDK tour + setup guide)
+- 🎬 **[Video Walkthrough](https://www.youtube.com/watch?v=jVdb4_ishNA)** - 5-minute comprehensive SDK tour
+- 🎪 **Live Demo (Local):** `http://localhost:3000` - Start with `cd examples/nextjs-app && pnpm dev`
 
 ---
 
