@@ -83,9 +83,9 @@ This SDK demonstrates production-grade FHEVM integration across all JavaScript e
 - **🚀 Real FHEVM**: Relayer SDK v0.2.0 from Zama (official)
 - **⚛️ Multi-Framework**: React, Vue, Node.js, Vanilla JS (same code works everywhere)
 - **📦 Monorepo**: Organized `/packages` for SDK and `/examples` for demos
-- **🧪 99-Bid Simulation**: Proves real encryption scales under load
+- **🧪 10-Participant Auction Simulation**: Proves real encryption works (~1 second per encrypted bid)
 - **🌐 Sepolia Testnet**: Works on Zama's FHEVM testnet
-- **� Full Documentation**: 2,900+ lines of guides and API refs
+- **📚 Full Documentation**: 1,500+ lines of guides and API refs
 
 ## 📋 Prerequisites
 
