@@ -26,11 +26,23 @@ export function useEncryptBid() {
       }
       
       // Sadece SDK'nin sağladığı SepoliaConfig'i direkt kullan
-      const config = relayerSDK.SepoliaConfig;
-      
-      console.log('[DEBUG] Using SepoliaConfig directly');
+      let config = relayerSDK.SepoliaConfig;
+
+      console.log('[DEBUG] Original SepoliaConfig:', JSON.stringify(config, null, 2));
+
+            // CORS sorunu olmayan alternatif RPC provider kullan
+      // Alchemy veya Infura yerine ücretsiz ve CORS-friendly provider
+      config = {
+        ...config,
+        network: 'https://sepolia.drpc.org', // CORS destekli, güvenilir RPC
+        rpcUrl: 'https://sepolia.drpc.org'
+      };
+
+      console.log('[DEBUG] Modified config:', JSON.stringify(config, null, 2));
+      console.log('[DEBUG] Using SepoliaConfig with Vite proxy');
+      console.log('[DEBUG] config.network:', config.network);
+      console.log('[DEBUG] config.rpcUrl:', config.rpcUrl);
       console.log('[DEBUG] config.relayerUrl:', config.relayerUrl);
-      console.log('[DEBUG] config keys:', Object.keys(config));
       console.log('[DEBUG] createInstance çağrılıyor...');
       
       // Instance olustur

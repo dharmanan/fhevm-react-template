@@ -1,5 +1,5 @@
+import "hardhat-deploy";
 import { DeployFunction } from "hardhat-deploy/types";
-// import { HardhatRuntimeEnvironment } from "hardhat/types";
 
 const func: DeployFunction = async function (hre: any) {
   const { deployer } = await hre.getNamedAccounts();

@@ -5,13 +5,6 @@
     <link rel="icon" type="image/svg+xml" href="/vite.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>QuantumPrice - Secret Price Auction</title>
-    <!-- WASM için gerekli headers (sadece gerektiğinde) -->
-    <script>
-      // WASM thread desteği kontrolü
-      if (typeof SharedArrayBuffer === 'undefined') {
-        console.warn('SharedArrayBuffer not supported - WASM threads may not work');
-      }
-    </script>
     <!-- Tailwind from CDN (dev only) -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- Google Fonts: load Inter BEFORE any CSS rules to avoid PostCSS @import order errors -->
@@ -25,11 +18,11 @@
       }
     </style>
   <!-- importmap reklam satırları kaldırıldı -->
-<link rel="stylesheet" href="/index.css">
+  <script type="module" crossorigin src="/assets/index-M-z5DdmZ.js"></script>
+  <link rel="stylesheet" crossorigin href="/assets/index-CUGZ5iXh.css">
 </head>
   <body class="bg-gray-50">
     <div id="root"></div>
-    <script type="module" src="/index.tsx"></script>
     <script src="/relayer-sdk-js.umd.cjs"></script>
   </body>
 </html>
