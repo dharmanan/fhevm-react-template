@@ -43,6 +43,16 @@ export default defineConfig(({ mode }) => {
     server: {
       port: 3000,
       host: '0.0.0.0',
+      proxy: {
+        '/rpc': {
+          target: 'https://ethereum-sepolia.publicnode.com',
+          changeOrigin: true,
+          rewrite: (path) => path.replace(/^\/rpc/, ''),
+          headers: {
+            'Content-Type': 'application/json',
+          }
+        }
+      }
     },
     plugins: [react()],
     define: {
