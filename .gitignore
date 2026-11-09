@@ -9,3 +9,6 @@ packages/*/.turbo
 packages/*/coverage
 tmp*
 .vscode
+# Security: local environment credentials
+**/.env.local
+**/.env.vercel
